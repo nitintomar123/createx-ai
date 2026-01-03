@@ -26,12 +26,12 @@ function App() {
 
   if (isLoadingSession) return null;
 
-  // If not logged in
+  // If user is not logged in
   if (!user) {
     return <AuthPage onAuthSuccess={setUser} />;
   }
 
-  // If not onboarded
+  // If onboarding not complete
   if (!user.isOnboarded) {
     return (
       <Onboarding
@@ -41,43 +41,28 @@ function App() {
     );
   }
 
-  // Main App
+  // Main app
   return (
-    <div className="h-screen bg-black text-gray-200 flex flex-col">
-      
-      {/* Top Header */}
-      <header className="flex items-center justify-between p-4 border-b border-gray-800 bg-gray-950">
-        <span className="font-bold text-white">CreateX.ai</span>
-        <div className="flex gap-2">
-          <button
-            onClick={() => setCurrentMode(AppMode.CHAT)}
-            className="px-3 py-1 bg-gray-800 rounded"
-          >
-            Chat
-          </button>
-          <button
-            onClick={() => setCurrentMode(AppMode.CONTENT)}
-            className="px-3 py-1 bg-gray-800 rounded"
-          >
-            Create
-          </button>
-          <button
-            onClick={handleLogout}
-            className="px-3 py-1 bg-red-600 rounded"
-          >
-            Logout
-          </button>
-        </div>
+    <div className="h-screen bg-black text-white flex flex-col">
+      <header className="p-4 border-b border-gray-800 flex justify-between">
+        <h1 className="font-bold">CreateX.ai</h1>
+        <button onClick={handleLogout} className="text-red-400">
+          Logout
+        </button>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 p-4 overflow-hidden">
+      <main className="flex-1 p-4">
         {currentMode === AppMode.CHAT ? (
           <ChatInterface />
         ) : (
           <ContentCreator />
         )}
       </main>
+
+      <footer className="p-2 border-t border-gray-800 flex gap-2 justify-center">
+        <button onClick={() => setCurrentMode(AppMode.CHAT)}>Chat</button>
+        <button onClick={() => setCurrentMode(AppMode.CONTENT)}>Content</button>
+      </footer>
     </div>
   );
 }
