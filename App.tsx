@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { ChatInterface } from './components/ChatInterface';
-import { ContentCreator } from './components/ContentCreator';
-import { AuthPage } from './components/AuthPage';
-import { Onboarding } from './components/Onboarding';
-import { AppMode, User } from './types';
-import { getSession, logout } from './services/authService';
+import React, { useState, useEffect } from "react";
+import { Menu } from "lucide-react";
+import { ChatInterface } from "./components/ChatInterface";
+import { ContentCreator } from "./components/ContentCreator";
+import { AuthPage } from "./components/AuthPage";
+import { Onboarding } from "./components/Onboarding";
+import { AppMode, User } from "./types";
+import { getSession, logout } from "./services/authService";
 
 function App() {
   const [currentMode, setCurrentMode] = useState<AppMode>(AppMode.CHAT);
@@ -26,12 +27,12 @@ function App() {
 
   if (isLoadingSession) return null;
 
-  // If user is not logged in
+  // Login screen
   if (!user) {
     return <AuthPage onAuthSuccess={setUser} />;
   }
 
-  // If onboarding not complete
+  // Onboarding screen
   if (!user.isOnboarded) {
     return (
       <Onboarding
@@ -41,28 +42,43 @@ function App() {
     );
   }
 
-  // Main app
+  // Main app (NO SIDEBAR)
   return (
-    <div className="h-screen bg-black text-white flex flex-col">
-      <header className="p-4 border-b border-gray-800 flex justify-between">
-        <h1 className="font-bold">CreateX.ai</h1>
-        <button onClick={handleLogout} className="text-red-400">
+    <div className="flex flex-col h-screen bg-black text-gray-200">
+      
+      {/* Top Header */}
+      <header className="flex items-center justify-between p-4 border-b border-gray-800 bg-gray-950">
+        <span className="font-bold text-white">CreateX.ai</span>
+
+        <button
+          onClick={() =>
+            setCurrentMode(
+              currentMode === AppMode.CHAT
+                ? AppMode.CONTENT
+                : AppMode.CHAT
+            )
+          }
+          className="px-3 py-1 bg-cyan-600 text-black rounded"
+        >
+          Switch
+        </button>
+
+        <button
+          onClick={handleLogout}
+          className="px-3 py-1 bg-red-600 rounded"
+        >
           Logout
         </button>
       </header>
 
-      <main className="flex-1 p-4">
+      {/* Content */}
+      <main className="flex-1 p-4 overflow-hidden">
         {currentMode === AppMode.CHAT ? (
           <ChatInterface />
         ) : (
           <ContentCreator />
         )}
       </main>
-
-      <footer className="p-2 border-t border-gray-800 flex gap-2 justify-center">
-        <button onClick={() => setCurrentMode(AppMode.CHAT)}>Chat</button>
-        <button onClick={() => setCurrentMode(AppMode.CONTENT)}>Content</button>
-      </footer>
     </div>
   );
 }
